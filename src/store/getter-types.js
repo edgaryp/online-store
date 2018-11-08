@@ -1,1 +1,2 @@
 export const GET_CURRENT_PRODUCT = "GET_CURRENT_PRODUCT"
+export const TEST = "TEST"

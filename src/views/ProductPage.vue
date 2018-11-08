@@ -1,8 +1,9 @@
 <template>
   <div class="about">
     <h1>Product: {{currentProductName}}</h1>
-    {{currentProduct}}
+    <p>{{currentProduct}}</p>
     <HelloWorld :currentProduct="currentProduct"/>
+    <button @click="test">Checkout</button>
   </div>
 </template>
 
@@ -30,7 +31,15 @@ export default {
   methods: {
     ...mapMutations({
       setCurrentProductName: mutationTypes.SET_CURRENT_PRODUCT_NAME
-    })
+    }),
+    test() {
+      this.$router.push({
+        name: 'basketPage',
+        params: {
+          shit: 'cunt'
+        }
+      });
+    }
   },
   created() {
     this.setCurrentProductName(this.currentProductName);

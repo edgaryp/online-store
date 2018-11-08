@@ -2,10 +2,9 @@
   <div class="home">
     <ul>
       <li v-for="(product, index) in products" :key="index">
-        <router-link :to="`/${getProductUrl(product.name)}`" exact>{{product.name}}</router-link>
+        <router-link :to="`/product/${getProductUrl(product.name)}`" exact>{{product.name}}</router-link>
       </li>
     </ul>
-    <img alt="Vue logo" src="../assets/logo.png">
   </div>
 </template>
 

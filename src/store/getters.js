@@ -5,5 +5,8 @@ export const getters = {
     return state.products.find(product => {
       return product.name === state.currentProductName;
     });
-  }
+  },
+  [getterTypes.TEST](state, value) {
+    return {state: state, value: value};
+  },
 }
