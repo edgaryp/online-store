@@ -1,4 +1,4 @@
-# vue-vuex-router-eslint
+# online-store
 
 ## Project setup
 ```
