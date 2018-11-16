@@ -1,2 +1,3 @@
 export const GET_CURRENT_PRODUCT = "GET_CURRENT_PRODUCT"
-export const TEST = "TEST"
+export const GET_CATEGORY = "GET_CATEGORY"
+export const GET_PRICE_RANGE_LIST = "GET_PRICE_RANGE_LIST"

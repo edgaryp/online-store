@@ -6,7 +6,20 @@ export const getters = {
       return product.name === state.currentProductName;
     });
   },
-  [getterTypes.TEST](state, value) {
-    return {state: state, value: value};
+  [getterTypes.GET_CATEGORY](state) {
+    const categories = [];
+    state.products.forEach(product => {
+      if(product.category && !categories.includes(product.category)) {
+        categories.push(product.category);
+      }
+    });
+    return categories;
   },
+  [getterTypes.GET_PRICE_RANGE_LIST](state) {
+    const priceRangelist = [];
+    state.priceFilterRange.forEach(element => {
+      priceRangelist.push(element.filter);
+    });
+    return priceRangelist;
+  }
 }
