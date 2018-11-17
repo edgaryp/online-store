@@ -13,6 +13,7 @@ export default new Vuex.Store({
     loadingErros: [],
     appliedFilters: [],
     priceFilterRange: [
+      { type: 'price', filter: '$30 and under$30 and under$30 and under$30 and under', min: 0, max: 30 },
       { type: 'price', filter: '$30 and under', min: 0, max: 30 },
       { type: 'price', filter: '$30 - $50', min: 30, max: 50 },
       { type: 'price', filter: '$50 - $100', min: 50, max: 100 },

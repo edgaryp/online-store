@@ -6,11 +6,11 @@
 
 <script>
 import {mapState, mapGetters, mapMutations} from 'vuex'
-import * as getterTypes from '../store/getter-types'
-import * as mutationTypes from '../store/mutation-types'
+import * as getterTypes from '@/store/getter-types'
+import * as mutationTypes from '@/store/mutation-types'
 
 export default {
-  name: 'PriceFilter',
+  name: 'PriceFilterChip',
   data() {
     return {
       selectedPriceRange: []

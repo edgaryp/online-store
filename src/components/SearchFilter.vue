@@ -6,7 +6,7 @@
 
 <script>
 import {mapState, mapMutations} from 'vuex'
-import * as mutationTypes from '../store/mutation-types'
+import * as mutationTypes from '@/store/mutation-types'
 
 export default {
   name: 'SearchFilter',

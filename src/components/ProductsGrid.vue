@@ -15,7 +15,7 @@
 
 <script>
 import {mapState} from 'vuex'
-import ProductNameFormat from '../helpers/product-urls.js'
+import ProductNameFormat from '@/helpers/product-urls.js'
 
 export default {
   name: 'ProductsGrid',

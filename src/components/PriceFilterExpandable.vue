@@ -1,0 +1,67 @@
+<template>
+  <v-list class="category-filter-expandable">
+    <v-list-group>
+      <v-list-tile slot="activator">
+        <v-list-tile-content>
+          <v-list-tile-title>Price range</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <v-list-tile v-for="(priceRange, index) in priceRangelist" :key="index" @click="categorySelected(priceRange)">
+        <v-list-tile-action @click="categorySelected(priceRange)">
+          <v-checkbox v-model="selectedPriceRange" :value="priceRange"></v-checkbox>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>{{priceRange}}</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+    </v-list-group>
+  </v-list>
+</template>
+
+<script>
+import {mapState, mapGetters, mapMutations} from 'vuex'
+import * as getterTypes from '@/store/getter-types'
+import * as mutationTypes from '@/store/mutation-types'
+
+export default {
+  name: 'PriceFilterExpandable',
+  data() {
+    return {
+      selectedPriceRange: []
+    };
+  },
+  computed: {
+    ...mapState([
+      'priceFilterRange',
+      'appliedFilters'
+    ]),
+    ...mapGetters({
+      priceRangelist: getterTypes.GET_PRICE_RANGE_LIST
+    })
+  },
+  watch: {
+    selectedPriceRange() {
+      this.setAppliedFilters({type: 'price', filters: [...this.selectedPriceRange]});
+    }
+  },
+  methods: {
+    ...mapMutations({
+      setAppliedFilters: mutationTypes.SET_APPLIED_FILTERS
+    }),
+    clearAllFilters() {
+      this.selectedPriceRange = [];
+    },
+    categorySelected(priceRange) {
+      if(typeof priceRange === 'string') {
+        // this method gets called twice
+        // frist time returns component, second time returns passed argument
+        if(this.selectedPriceRange.includes(priceRange)) {
+          this.selectedPriceRange = this.selectedPriceRange.filter(item => item != priceRange);
+        } else {
+          this.selectedPriceRange.push(priceRange);
+        }
+      }
+    }
+  }
+}
+</script>

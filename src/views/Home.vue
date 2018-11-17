@@ -1,21 +1,23 @@
 <template>
   <v-content>
-    <v-container class="pb-0">
+    <v-container>
       <v-layout row wrap>
         <v-flex lg2 md3 xs12>
-          <v-container>
+          <v-container class="pr-0 pl-0">
             <v-layout row justify-space-between align-center>
                 <h2>Refine</h2>
                 <v-tooltip bottom light>
-                  <v-btn slot="activator" icon left light @click="clearAllFilters"><v-icon>clear_all</v-icon></v-btn>
+                  <v-btn slot="activator" icon left light @click="clearAllFilters(['searchFilter', 'categoryFilterExpandable', 'priceFilterExpandable'])"><v-icon>clear_all</v-icon></v-btn>
                   <span>Clear all</span>
                 </v-tooltip>
             </v-layout>
             <v-divider class="mt-3 mb-2"></v-divider>
             <v-layout column>
                 <SearchFilter ref="searchFilter" />
-                <CategoryFilter ref="categoryFilter" />
-                <PriceFilter ref="priceFilter" />
+                <CategoryFilterExpandable ref="categoryFilterExpandable" />
+                <!-- <CategoryFilterChip ref="categoryFilterChip" /> -->
+                <PriceFilterExpandable ref="priceFilterExpandable" />
+                <!-- <PriceFilterChip ref="priceFilterChip" /> -->
             </v-layout>
           </v-container>
         </v-flex>
@@ -32,27 +34,25 @@
 </template>
 
 <script>
-// @ is an alias to /src[]
 import {mapState} from 'vuex'
-import * as mutationTypes from '../store/mutation-types'
-import ProductNameFormat from '../helpers/product-urls.js'
-import PriceFilter from '@/components/PriceFilter.vue'
-import CategoryFilter from '@/components/CategoryFilter.vue'
+import * as mutationTypes from '@/store/mutation-types'
+import ProductNameFormat from '@/helpers/product-urls.js'
+import PriceFilterExpandable from '@/components/PriceFilterExpandable.vue'
+// import PriceFilterChip from '@/components/PriceFilterChip.vue'
+import CategoryFilterExpandable from '@/components/CategoryFilterExpandable.vue'
+// import CategoryFilterChip from '@/components/CategoryFilterChip.vue'
 import ProductsGrid from '@/components/ProductsGrid.vue'
 import SearchFilter from '@/components/SearchFilter.vue'
 
 export default {
   name: 'home',
   components: {
-    PriceFilter,
-    CategoryFilter,
+    PriceFilterExpandable,
+    // PriceFilterChip,
+    CategoryFilterExpandable,
+    // CategoryFilterChip,
     ProductsGrid,
     SearchFilter
-  },
-  data() {
-    return {
-      message: 'mother fucking cunt'
-    };
   },
   computed: {
     ...mapState([
@@ -62,11 +62,11 @@ export default {
   },
   methods: {
     getProductUrl: ProductNameFormat.getProductUrl,
-    clearAllFilters() {
+    clearAllFilters(refs) {
       this.$store.commit(mutationTypes.CLEAR_APPLIED_FILTER);
-      this.$refs.categoryFilter.clearAllFilters();
-      this.$refs.priceFilter.clearAllFilters();
-      this.$refs.searchFilter.clearAllFilters();
+      refs.forEach(ref => {
+        this.$refs[ref].clearAllFilters();
+      });
     }
   }
 }
