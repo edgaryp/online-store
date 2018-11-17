@@ -1,5 +1,5 @@
 <template>
-  <v-flex md3 sm6 xs12 d-flex exact>
+  <v-flex md4 sm6 xs12 d-flex exact>
     <v-card flat :to="`/product/${getProductUrl(product.name)}`">
       <v-container fill-height>
         <v-layout column fill-height>

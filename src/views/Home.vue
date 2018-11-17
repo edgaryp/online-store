@@ -1,25 +1,25 @@
 <template>
   <v-content>
-    <v-container>
+    <v-container class="pb-0">
       <v-layout row wrap>
-        <v-flex xs12>
+        <v-flex lg2 md3 xs12>
           <v-container>
-            <h2>filter goes here</h2>
-            <v-layout row>
-              <v-flex md4 xs12>
-                <v-container>
-                  <CategoryFilter />
-                </v-container>
-              </v-flex>
-              <v-flex md4 xs12>
-                <v-container>
-                  <PriceFilter />
-                </v-container>
-              </v-flex>
+            <v-layout row justify-space-between align-center>
+                <h2>Refine</h2>
+                <v-tooltip bottom light>
+                  <v-btn slot="activator" icon left light @click="clearAllFilters"><v-icon>clear_all</v-icon></v-btn>
+                  <span>Clear all</span>
+                </v-tooltip>
+            </v-layout>
+            <v-divider class="mt-3 mb-2"></v-divider>
+            <v-layout column>
+                <SearchFilter ref="searchFilter" />
+                <CategoryFilter ref="categoryFilter" />
+                <PriceFilter ref="priceFilter" />
             </v-layout>
           </v-container>
         </v-flex>
-        <v-flex xs12>
+        <v-flex lg10 md9 xs12>
           <v-container grid-list-md>
               <v-layout row wrap>
                 <ProductsGrid v-for="(product, index) in products" :key="index" :product="product" />
@@ -34,19 +34,20 @@
 <script>
 // @ is an alias to /src[]
 import {mapState} from 'vuex'
-// import * as getterTypes from '../store/getter-types'
-// import * as mutationTypes from '../store/mutation-types'
+import * as mutationTypes from '../store/mutation-types'
 import ProductNameFormat from '../helpers/product-urls.js'
 import PriceFilter from '@/components/PriceFilter.vue'
 import CategoryFilter from '@/components/CategoryFilter.vue'
 import ProductsGrid from '@/components/ProductsGrid.vue'
+import SearchFilter from '@/components/SearchFilter.vue'
 
 export default {
   name: 'home',
   components: {
     PriceFilter,
     CategoryFilter,
-    ProductsGrid
+    ProductsGrid,
+    SearchFilter
   },
   data() {
     return {
@@ -60,7 +61,13 @@ export default {
     ]),
   },
   methods: {
-    getProductUrl: ProductNameFormat.getProductUrl
+    getProductUrl: ProductNameFormat.getProductUrl,
+    clearAllFilters() {
+      this.$store.commit(mutationTypes.CLEAR_APPLIED_FILTER);
+      this.$refs.categoryFilter.clearAllFilters();
+      this.$refs.priceFilter.clearAllFilters();
+      this.$refs.searchFilter.clearAllFilters();
+    }
   }
 }
 </script>

@@ -32,7 +32,10 @@ export default {
   methods: {
     ...mapMutations({
       setAppliedFilters: mutationTypes.SET_APPLIED_FILTERS
-    })
+    }),
+    clearAllFilters() {
+      this.selectedCategories = [];
+    }
   }
 }
 </script>
