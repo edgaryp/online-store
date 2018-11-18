@@ -13,6 +13,9 @@ export const mutations = {
   [mutationTypes.CLEAR_APPLIED_FILTER](state) {
     state.appliedFilters = [];
   },
+  [mutationTypes.SET_APPLIED_SORT](state, sort) {
+    state.appliedSort = sort;
+  },
   [mutationTypes.SET_APPLIED_FILTERS](state, value) {
     state.appliedFilters = state.appliedFilters.filter(filter => filter.type != value.type);
     switch(value.type) {
@@ -30,13 +33,12 @@ export const mutations = {
           state.appliedFilters.push({
             type: value.type,
             filter: filter,
-            min: getPriceFilterRange[0].min || null,
-            max: getPriceFilterRange[0].max || null
+            min: getPriceFilterRange[0].min,
+            max: getPriceFilterRange[0].max
           })
         })
         break;
       case 'search':
-        // state.appliedFilters = state.appliedFilters.filter(item => item.filter === value.filter);
         if(value.filter) {
           state.appliedFilters.push({
             type: value.type,
@@ -47,7 +49,7 @@ export const mutations = {
         }
         break;
       default:
-        state.loadingErros.push({'mutationTypes.SET_APPLIED_FILTERS': 'Filter type has to be category or price'});
+        state.loadingErros.push({'mutationTypes.SET_APPLIED_FILTERS': 'Filter type is not found'});
     }
   }
 }

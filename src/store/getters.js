@@ -1,4 +1,5 @@
 import * as getterTypes from './getter-types'
+import SortProducts from '@/helpers/sort.js'
 
 export const getters = {
   [getterTypes.GET_CURRENT_PRODUCT](state) {
@@ -21,5 +22,21 @@ export const getters = {
       priceRangelist.push(element.filter);
     });
     return priceRangelist;
+  },
+  [getterTypes.GET_FILTERED_PRODUCTS](state) {
+    const result = [];
+    state.products.forEach(product => {
+      for(const key in state.appliedFilters) {
+        const currentFilter = state.appliedFilters[key];
+        const matchCategory = product.category === currentFilter.filter;
+        const matchSearch = product.name.includes(currentFilter.filter) || product.description.includes(currentFilter.filter) || product.price.includes(currentFilter.filter);
+        const matchPrice = parseInt(product.price) >= currentFilter.min && parseInt(product.price) <= currentFilter.max;
+
+        if(matchCategory || matchSearch || matchPrice) {
+          result.push(product);
+        }
+      }
+    });
+    return state.appliedFilters.length <= 0 ? SortProducts.sorting([...state.products], state.appliedSort) : SortProducts.sorting(result, state.appliedSort);
   }
 }

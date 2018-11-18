@@ -6,7 +6,7 @@
           <v-list-tile-title>Category</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
-      <v-list-tile v-for="(category, index) in categories" :key="index" @click="categorySelected(category)">
+      <v-list-tile v-for="category in categories" :key="category" @click="categorySelected(category)">
         <v-list-tile-action @click="categorySelected(category)">
           <v-checkbox v-model="selectedCategories" :value="category"></v-checkbox>
         </v-list-tile-action>

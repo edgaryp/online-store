@@ -26,11 +26,10 @@ export default {
     ...mapState([
       'products',
       'loadingErros'
-    ]),
+    ])
   },
   methods: {
     getProductUrl: ProductNameFormat.getProductUrl
   }
 }
 </script>
-
