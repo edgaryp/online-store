@@ -1,6 +1,7 @@
 <template>
   <v-flex md4 sm6 xs12 d-flex exact>
     <v-card flat :to="`/product/${getProductUrl(product.name)}`">
+      <img :src="`https://picsum.photos/525/394?image=${Math.floor(Math.random()*(1080-500+1)+500)}`" :onerror="'this.src=`https://picsum.photos/525/394?image=${Math.floor(Math.random()*(1080-500+1)+500)}`'" width="100%">
       <v-container fill-height>
         <v-layout column fill-height>
             <h3>{{product.name}}</h3>
