@@ -2,17 +2,13 @@
   <v-app>
     <v-toolbar app>
       <v-toolbar-title class="headline text-uppercase">
-        <span>Vuetify</span>
-        <span class="font-weight-light">MATERIAL DESIGN</span>
+        <span>Edgar</span>
+        <span class="font-weight-light">Pan</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn flat href="https://github.com/vuetifyjs/vuetify/releases/latest" target="_blank">
-        <span class="mr-2">Latest Release</span>
-      </v-btn>
+      <v-btn color="info" @click="uploadProducts" disabled>Upload products</v-btn>
     </v-toolbar>
-    <!-- <v-container> -->
-      <router-view/>
-    <!-- </v-container> -->
+    <router-view/>
   </v-app>
 </template>
 
@@ -24,16 +20,16 @@ db.settings({ timestampsInSnapshots: true });
 
 export default {
   name: 'App',
-  data() {
-    return {
-      //
-    };
-  },
   computed: {
     ...mapState([
       'products',
       'loadingErros'
     ])
+  },
+  methods: {
+    uploadProducts() {
+      this.$store.dispatch('UPLOAD_PRODUCT');
+    }
   }
 }
 </script>

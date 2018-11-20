@@ -8,7 +8,7 @@
       </v-list-tile>
       <v-list-tile v-for="priceRange in priceRangelist" :key="priceRange" @click="priceSelected(priceRange)">
         <v-list-tile-action @click="priceSelected(priceRange)">
-          <v-checkbox v-model="selectedPriceRange" :value="priceRange"></v-checkbox>
+          <v-checkbox v-model="selectedPriceRange" :value="priceRange" color="primary"></v-checkbox>
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-title>{{priceRange}}</v-list-tile-title>

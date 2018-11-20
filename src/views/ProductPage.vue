@@ -11,7 +11,7 @@
 import {mapState, mapMutations, mapGetters} from 'vuex'
 import * as mutationTypes from '../store/mutation-types'
 import * as getterTypes from '../store/getter-types'
-import HelloWorld from '@/components/HelloWorld.vue'
+import HelloWorld from '@/components/ProductPage/HelloWorld.vue'
 
 export default {
   props: [

@@ -8,7 +8,7 @@
       </v-list-tile>
       <v-list-tile v-for="category in categories" :key="category" @click="categorySelected(category)">
         <v-list-tile-action @click="categorySelected(category)">
-          <v-checkbox v-model="selectedCategories" :value="category"></v-checkbox>
+          <v-checkbox v-model="selectedCategories" :value="category" color="primary"></v-checkbox>
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-title>{{category}}</v-list-tile-title>
