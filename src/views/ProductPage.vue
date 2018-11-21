@@ -1,10 +1,20 @@
 <template>
-  <div class="about">
-    <h1>Product: {{currentProductName}}</h1>
-    <p>{{currentProduct}}</p>
-    <HelloWorld :currentProduct="currentProduct"/>
-    <button @click="test">Checkout</button>
-  </div>
+  <v-content>
+    <v-container>
+      <v-layout>
+        <v-flex md6 sm12>
+          <div class="about">
+            <h1>Product: {{currentProductName}}</h1>
+            <p>{{currentProduct}}</p>
+            <HelloWorld :currentProduct="currentProduct"/>
+            <button @click="test">Checkout</button>
+          </div>
+        </v-flex>
+        <v-flex md6 sm12>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-content>
 </template>
 
 <script>
