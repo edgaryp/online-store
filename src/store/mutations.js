@@ -1,6 +1,11 @@
 import * as mutationTypes from './mutation-types'
 
 export const mutations = {
+  // data from local
+  // [mutationTypes.SET_PRODUCTS](state, product) {
+  //   state.products = product;
+  // },
+  // data from firestroe
   [mutationTypes.SET_PRODUCTS](state, product) {
     state.products.push(product);
   },

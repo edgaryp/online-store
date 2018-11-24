@@ -6,13 +6,11 @@
       <v-btn depressed fab flat icon small slot="activator" class="button">
         <v-icon size="28" color="rgba(255, 255, 255, 0.6)" class="zoom-icon">zoom_in</v-icon>
       </v-btn>
-      <!-- <v-card> -->
-        <v-img v-for="url in imgUrl" :src="url" :key="url" width="100%" />
-      <!-- </v-card> -->
+      <v-img v-for="url in imageUrl" :src="url" :key="url" width="100%" />
     </v-dialog>
     <!-- Image modal end -->
     <v-card flat :to="`/product/${getProductUrl(product.name)}`">
-      <img :src="imgUrl[0]" width="100%" />
+      <img :src="imageUrl[0]" width="100%" />
       <v-container class="pt-2">
         <v-layout column>
             <h3 class="primary--text text-capitalize">{{product.name}}</h3>
@@ -27,6 +25,7 @@
 <script>
 import {mapState} from 'vuex'
 import ProductNameFormat from '@/helpers/product-urls.js'
+import {mixin} from '@/helpers/mixin.js'
 
 export default {
   name: 'ProductsGrid',
@@ -35,7 +34,6 @@ export default {
   },
   data() {
     return {
-      imgUrl: [],
       dialog: false
     };
   },
@@ -45,21 +43,12 @@ export default {
       'loadingErros'
     ])
   },
+  mixins: [mixin],
   methods: {
-    getProductUrl: ProductNameFormat.getProductUrl,
-    imageExists() {
-      const img = new Image();
-      img.src = `https://picsum.photos/525/394?image=${Math.floor(Math.random()*(1080-500+1)+500)}`;
-      img.onload = () => {
-        this.imgUrl.push(img.src);
-      };
-      img.onerror = () => {
-        this.imageExists();
-      };
-    }
+    getProductUrl: ProductNameFormat.getProductUrl
   },
   created() {
-    this.imageExists();
+    this.renderImageUrl(`${this.product.imageUrl}${this.product.imageIndex}`, 1);
   }
 }
 </script>

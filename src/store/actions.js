@@ -4,6 +4,12 @@ import {db} from '../config/firestore'
 import {products} from '../assets/products'
 
 export const actions = {
+  // data from local
+  // async [actionTypes.GET_PRODUCTS]({commit}) {
+  //   commit(mutationTypes.SET_PRODUCTS, products);
+  // },
+
+  // data from firestroe
   async [actionTypes.GET_PRODUCTS]({commit}) {
     try {
       const collectionProducts = await db.collection('products').get();
@@ -14,23 +20,42 @@ export const actions = {
       commit(mutationTypes.LOG_ERROR, {'actionTypes.GET_PRODUCTS': error});
     }
   },
-  async [actionTypes.UPLOAD_PRODUCT](state) {
-    try {
-      const collectionProducts = db.collection("products");
-      if(!state.products.length) {
-        const collectionSnap = await collectionProducts.get();
-        collectionSnap.forEach(async (product, index) => {
-          await collectionProducts.doc(product.id).delete();
-          console.log(`(${index})Deleted: ${product.id} => ${product.data()}`); // eslint-disable-line
-        });
-      } else {
-        products.forEach(async (product, index) => {
-          await collectionProducts.add(product);
-          console.log(`(${index})Done: ${product.name}`); // eslint-disable-line
-        });
-      }
-    } catch(error) {
-      console.log(error); // eslint-disable-line
-    }
+
+  async [actionTypes.UPLOAD_PRODUCT]() {
+    const collectionProducts = db.collection("products");
+
+    // Delete
+    const collectionSnap = await collectionProducts.get();
+    collectionSnap.forEach(async (product, index) => {
+      await collectionProducts.doc(product.id).delete();
+      console.log(`(${index})Deleted: ${product.id} => ${product.data()}`); // eslint-disable-line
+    });
+
+    // Add
+    products.forEach(async (product, index) => {
+      await collectionProducts.add(product);
+      console.log(`(${index})Done: ${product.name}`); // eslint-disable-line
+    });
+
+    // Test
+    // try {
+    //   const collectionProducts = db.collection("products");
+    //   const stateProducts = Array.prototype.slice.call(state.products);
+    //   // console.log(stateProducts); // eslint-disable-line
+    //   if(!stateProducts.length) {
+    //     const collectionSnap = await collectionProducts.get();
+    //     collectionSnap.forEach(async (product, index) => {
+    //       await collectionProducts.doc(product.id).delete();
+    //       console.log(`(${index})Deleted: ${product.id} => ${product.data()}`); // eslint-disable-line
+    //     });
+    //   } else {
+    //     products.forEach(async (product, index) => {
+    //       await collectionProducts.add(product);
+    //       console.log(`(${index})Done: ${product.name}`); // eslint-disable-line
+    //     });
+    //   }
+    // } catch(error) {
+    //   console.log(error); // eslint-disable-line
+    // }
   }
 }

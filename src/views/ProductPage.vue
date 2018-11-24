@@ -1,19 +1,17 @@
 <template>
   <v-content>
-    <v-container>
+    <v-container v-if="currentProduct">
       <v-layout row wrap>
+        <Carousel :currentProduct="currentProduct" :currentSlide="currentSlide" v-on:updateCurrentSide="updateCurrentSide"/>
         <v-flex md6 sm12 xs12>
-          <div class="carousel">
-            <vueper-slides fixed-height="394px" :bullets="bullets" @slide="logEvents">
-                <vueper-slide v-for="(image, index) in images" :key="index" :image="image">
-                </vueper-slide>
-            </vueper-slides>
-            <div class="carousel-caption pt-2 pb-2">
-              <p class="mb-0">cunt</p>
-            </div>
-          </div>
-        </v-flex>
-        <v-flex md6 sm12 xs12>
+          <v-container>
+            <h1 class="display-1">{{ currentProductName }}</h1>
+            <h2 class="display-1 primary--text mt-2 mb-4">${{ currentProduct.price }}</h2>
+            <p class="body-1">{{ currentProduct.description }}</p>
+            <v-select class="pt-0" :items="attributes" item-text="title" item-value="slide" v-model="selectedAttributes" prepend-icon="card_giftcard" menu-props="auto" hide-details label="Suspendisse accumsan" single-line return-object>
+            </v-select>
+            <div v-html="description"></div>
+          </v-container>
         </v-flex>
       </v-layout>
     </v-container>
@@ -21,44 +19,53 @@
 </template>
 
 <script>
-/* eslint-disable */
 import {mapState, mapMutations, mapGetters} from 'vuex'
 import * as mutationTypes from '../store/mutation-types'
 import * as getterTypes from '../store/getter-types'
-// import HelloWorld from '@/components/ProductPage/HelloWorld.vue'
-import { VueperSlides, VueperSlide } from 'vueperslides'
-import 'vueperslides/dist/vueperslides.min.css'
+import Carousel from '@/components/ProductPage/Carousel.vue'
 
 
 export default {
   data() {
     return {
-      // static for now
-      images: [
-        'https://picsum.photos/525/394?image=700',
-        'https://picsum.photos/525/394?image=1045',
-        'https://picsum.photos/525/394?image=878',
-        'https://picsum.photos/525/394?image=543',
-        'https://picsum.photos/525/394?image=1047'
-      ],
-      bullets: false
-    }
+      currentProduct: null,
+      currentSlide: null,
+      description: null
+    };
   },
   props: [
     'currentProductName' // from router
   ],
   components: {
-    VueperSlides,
-    VueperSlide
-    // HelloWorld
+    Carousel
   },
   computed: {
     ...mapState([
-      'products'
+      'products',
+      'attributes'
     ]),
     ...mapGetters({
-      currentProduct: getterTypes.GET_CURRENT_PRODUCT
-    })
+      getCurrentProduct: getterTypes.GET_CURRENT_PRODUCT_P
+    }),
+    getAttributesList() {
+      return this.attributes.reduce((accumulator, currentValue) => {
+        return accumulator.concat(currentValue.title);
+      }, []);
+    },
+    selectedAttributes: {
+      get() {
+        return null;
+      },
+      set(selectedAttribute) {
+        this.currentSlide = selectedAttribute.slide;
+        this.description = selectedAttribute.description;
+      }
+    }
+  },
+  watch: {
+    getCurrentProduct(promise) {
+      promise.then(result => this.currentProduct = result);
+    }
   },
   methods: {
     ...mapMutations({
@@ -72,9 +79,9 @@ export default {
         }
       });
     },
-    logEvents (eventName, params) {
-      console.log({eventName, params});
-      this.events += ` ${eventName},  ${JSON.stringify(params, null, 0)}`
+    updateCurrentSide(value) {
+      // update current slide from child component when thumbnails clicked
+      this.currentSlide = value;
     }
   },
   created() {
@@ -82,22 +89,3 @@ export default {
   }
 }
 </script>
-
-<style lang="less" scoped>
-.carousel {
-  position: relative;
-  &-caption {
-    position: absolute;
-    bottom: 0px;
-    width: 100%;
-    text-align: center;
-    z-index: 10;
-    background-color: rgba(255, 255, 255, 0.5);
-    display: flex;
-    justify-content: center;
-    p {
-      color: white;
-    }
-  }
-}
-</style>
