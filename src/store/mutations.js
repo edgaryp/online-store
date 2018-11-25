@@ -56,5 +56,11 @@ export const mutations = {
       default:
         state.loadingErros.push({'mutationTypes.SET_APPLIED_FILTERS': 'Filter type is not found'});
     }
+  },
+  [mutationTypes.SET_SELECTED_ATTRIBUTE](state, value) {
+    state.selectedAttribute = value;
+  },
+  [mutationTypes.SET_ACTIVATED_SLIDE](state, value) {
+    state.activatedSlide = value;
   }
 }

@@ -1,26 +1,32 @@
 <template>
-  <v-flex md6 sm12 xs12>
-    <template v-if="imageUrl.length >= 5">
-      <div class="carousel">
-        <vueper-slides ref="carousel" fade :slide-ratio="0.9" :breakpoints="carouselBreakpoints" :bullets="bullets" >
-            <template v-for="(image, index) in imageUrl">
-              <vueper-slide :image="image" :key="index" :content="getImageTitle(index)">
-              </vueper-slide>
-            </template>
-        </vueper-slides>
+  <div v-if="imageUrl.length >= 5">
+    <div class="carousel">
+      <vueper-slides ref="carousel" fade :slide-ratio="0.9" :breakpoints="carouselBreakpoints" :bullets="false" :touchable="false" :arrows="false">
+          <template v-for="(image, index) in imageUrl">
+            <vueper-slide :image="image" :key="index">
+            <!-- <vueper-slide :image="image" :key="index" :content="selectedAttribute ? selectedAttribute.title : ''"> -->
+              <div slot="slideContent">
+                <div v-if="selectedAttribute">
+                  <div class="pt-2 pb-2">
+                    <p class="subheading mb-0 font-weight-bold">{{ selectedAttribute ? selectedAttribute.title : '' }}</p>
+                  </div>
+                </div>
+              </div>
+            </vueper-slide>
+          </template>
+      </vueper-slides>
+    </div>
+    <div class="thumbnails mt-3">
+      <div v-for="(image, index) in imageUrl" :key="image+index" @click="goSlide(index)">
+        <v-img :src="image" />
       </div>
-      <div class="thumbnails mt-3">
-        <div v-for="(image, index) in imageUrl" :key="image+index" @click="goSlide(index)">
-          <v-img :src="image" />
-        </div>
-      </div>
-    </template>
-  </v-flex>
+    </div>
+  </div>
 </template>
 
 <script>
-
-import {mapState} from 'vuex'
+import {mapState, mapMutations} from 'vuex'
+import * as mutationTypes from '@/store/mutation-types'
 import {mixin} from '@/helpers/mixin.js'
 import {VueperSlides, VueperSlide} from 'vueperslides'
 import 'vueperslides/dist/vueperslides.min.css'
@@ -29,7 +35,6 @@ export default {
   name: 'Carousel',
   data() {
     return {
-      bullets: false,
       carouselBreakpoints: {
         960: {
           slideRatio: 0.7
@@ -46,13 +51,14 @@ export default {
     };
   },
   props: [
-    'currentProduct',
-    'currentSlide'
+    'currentProduct'
   ],
   mixins: [mixin],
   computed: {
     ...mapState([
-      'attributes'
+      'attributes',
+      'selectedAttribute',
+      'activatedSlide'
     ])
   },
   components: {
@@ -60,36 +66,26 @@ export default {
     VueperSlide
   },
   watch: {
-    // don't know why it isn't working anymore so changed to using created()
-    // currentProduct(currentProduct) {
-    //   console.log(currentProduct); // eslint-disable-line
-    //   this.renderImageUrl(currentProduct.imageUrl, 5);
-    // },
-    currentSlide(currentSlide) {
-      // this change coming from parent component via props, dropdown select
-      this.goSlide(currentSlide)
+    selectedAttribute(selectedAttribute) {
+      this.setActivatedSlide(selectedAttribute.slide);
+    },
+    activatedSlide(index) {
+      this.$refs.carousel.goToSlide(index);
     }
   },
   methods: {
-    logEvents (eventName, params) {
-      console.log({eventName, params}); // eslint-disable-line
-      this.events += ` ${eventName},  ${JSON.stringify(params, null, 0)}`
-    },
-    getImageTitle(index) {
-      switch(index) {
-        case 1:
-          return this.attributes[index].title;
-        case 2:
-          return this.attributes[index].title;
-        case 3:
-          return this.attributes[index].title;
-        default:
-          return this.currentProduct.name;
+    ...mapMutations({
+      setSelectedAttribute: mutationTypes.SET_SELECTED_ATTRIBUTE,
+      setActivatedSlide: mutationTypes.SET_ACTIVATED_SLIDE
+    }),
+    goSlide(index) {
+      if(index >= 1 && index <= 3) {
+        this.setSelectedAttribute(this.attributes[index - 1]);
+      } else if (index === 0) {
+        this.setSelectedAttribute(this.attributes[3]);
+      } else {
+        this.$refs.carousel.goToSlide(index);
       }
-    },
-    goSlide(value) {
-      this.$refs.carousel.goToSlide(value);
-      this.$emit('updateCurrentSide', value);
     }
   },
   created() {
@@ -98,30 +94,30 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .carousel {
   position: relative;
-  &-caption {
-    position: absolute;
-    bottom: 0px;
-    width: 100%;
-    text-align: center;
-    z-index: 10;
-    background-color: rgba(255, 255, 255, 0.5);
-    display: flex;
-    justify-content: center;
-    p {
-      color: white;
-    }
-  }
 }
 .thumbnails {
   display: grid;
   grid-template-columns: repeat(5, auto [col-start]);
   grid-column-gap: 5px;
+  z-index: 10;
   > div {
     border: 2.5px solid #acacac;
     cursor: pointer;
   }
+}
+
+.vueperslide__content-wrapper {
+  height: 100%;
+  width: 100%;
+}
+
+.vueperslide__content {
+  width: 100%;
+  bottom: -1px;
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.8);
 }
 </style>

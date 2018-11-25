@@ -54,7 +54,8 @@ export default new Vuex.Store({
         slide: 0
       }
     ],
-    testCurrentProduct: null
+    selectedAttribute: null,
+    activatedSlide: null
   },
   mutations,
   actions,
