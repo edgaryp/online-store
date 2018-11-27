@@ -19,10 +19,10 @@
             <v-layout row wrap class="mt-5">
               <v-flex md6 sm6 xs12 class="quantity">
                 <p class="mb-0 pr-2">Quantity</p>
-                <v-text-field label="cunt" type="number" outline :single-line="true" :hide-details="true" :placeholder="1" :height="40"></v-text-field>
+                <v-text-field v-model.number="quantityWatch" :min="0" type="number" outline :single-line="true" :hide-details="true" :height="40" @keypress="updateQuantity"></v-text-field>
               </v-flex>
               <v-flex md6 sm6 xs12 class="add-to-cart">
-                <v-btn large :loading="loading" :disabled="loading" color="secondary" @click="addToCart">
+                <v-btn large :loading="loading" :disabled="loading || quantity <= 0" color="secondary" @click="addToCart">
                 Add to cart
                 </v-btn>
               </v-flex>
@@ -47,7 +47,8 @@ export default {
       currentProduct: null,
       description: null,
       loader: null,
-      loading: false
+      loading: false,
+      quantity: 1
     };
   },
   props: [
@@ -77,6 +78,14 @@ export default {
       },
       set(selectedAttribute) {
         this.setSelectedAttribute(selectedAttribute);
+      }
+    },
+    quantityWatch: {
+      get() {
+        return this.quantity;
+      },
+      set(quantity) {
+        return quantity === 0 ? this.quantity = 1 : this.quantity = quantity;
       }
     }
   },
@@ -109,6 +118,15 @@ export default {
     },
     addToCart() {
       this.loader = 'loading';
+    },
+    updateQuantity(data) {
+      const {keyCode} = data;
+      if(keyCode >= 48 && keyCode <= 57) {
+        console.log(data); // eslint-disable-line
+      } else {
+        event.preventDefault();
+        return
+      }
     }
   },
   created() {
