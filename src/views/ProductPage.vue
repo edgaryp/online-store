@@ -16,11 +16,17 @@
             <p class="body-1">{{ currentProduct.description }}</p>
             <v-select class="pt-0" :items="attributes" item-text="title" item-value="slide" v-model="selectedAttributes" prepend-icon="card_giftcard" menu-props="auto" hide-details label="Suspendisse accumsan" single-line return-object></v-select>
             <div v-html="description" class="mt-4"></div>
-            <div>
-              <v-btn large class="add-to-cart" :loading="loading" :disabled="loading" color="secondary" @click="loader = 'loading'">
+            <v-layout row wrap class="mt-5">
+              <v-flex md6 sm6 xs12 class="quantity">
+                <p class="mb-0 pr-2">Quantity</p>
+                <v-text-field label="cunt" type="number" outline :single-line="true" :hide-details="true" :placeholder="1" :height="40"></v-text-field>
+              </v-flex>
+              <v-flex md6 sm6 xs12 class="add-to-cart">
+                <v-btn large :loading="loading" :disabled="loading" color="secondary" @click="addToCart">
                 Add to cart
-              </v-btn>
-            </div>
+                </v-btn>
+              </v-flex>
+            </v-layout>
           </v-container>
         </v-flex>
       </v-layout>
@@ -100,6 +106,9 @@ export default {
           shit: 'cunt'
         }
       });
+    },
+    addToCart() {
+      this.loader = 'loading';
     }
   },
   created() {
@@ -108,7 +117,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .product-page {
   &-right {
     .container {
@@ -116,8 +125,34 @@ export default {
         padding-top: 0 !important;
       }
     }
+    .quantity {
+      display: flex;
+      align-items: center;
+      .v-input {
+        max-width: 80px;
+      }
+      .v-input__slot {
+        min-height: 0;
+      }
+      input {
+        margin: 0;
+        padding: 0;
+      }
+      .v-text-field__slot {
+        align-items: center;
+      }
+      @media (max-width: 600px) {
+        justify-content: flex-end;
+        margin-bottom: 20px;
+      }
+    }
     .add-to-cart {
-
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      .v-btn {
+        margin: 0;
+      }
     }
   }
 }
