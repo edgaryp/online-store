@@ -4,7 +4,6 @@
       <vueper-slides ref="carousel" fade :slide-ratio="0.9" :breakpoints="carouselBreakpoints" :bullets="false" :touchable="false" :arrows="false">
           <template v-for="(image, index) in imageUrl">
             <vueper-slide :image="image" :key="index">
-            <!-- <vueper-slide :image="image" :key="index" :content="selectedAttribute ? selectedAttribute.title : ''"> -->
               <div slot="slideContent">
                 <div v-if="selectedAttribute">
                   <div class="pt-2 pb-2">
@@ -27,7 +26,6 @@
 <script>
 import {mapState, mapMutations} from 'vuex'
 import * as mutationTypes from '@/store/mutation-types'
-import {mixin} from '@/helpers/mixin.js'
 import {VueperSlides, VueperSlide} from 'vueperslides'
 import 'vueperslides/dist/vueperslides.min.css'
 
@@ -53,7 +51,6 @@ export default {
   props: [
     'currentProduct'
   ],
-  mixins: [mixin],
   computed: {
     ...mapState([
       'attributes',
@@ -87,9 +84,6 @@ export default {
         this.$refs.carousel.goToSlide(index);
       }
     }
-  },
-  created() {
-    // this.renderImageUrl(this.currentProduct.imageUrl, 5);
   }
 }
 </script>

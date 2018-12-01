@@ -6,11 +6,11 @@
       <v-btn depressed fab flat icon small slot="activator" class="button">
         <v-icon size="28" color="rgba(255, 255, 255, 0.6)" class="zoom-icon">zoom_in</v-icon>
       </v-btn>
-      <v-img v-for="url in imageUrl" :src="url" :key="url" width="100%" />
+      <v-img :src="product.imageUrl" width="100%" />
     </v-dialog>
     <!-- Image modal end -->
     <v-card flat :to="`/product/${getProductUrl(product.name)}`">
-      <img :src="imageUrl[0]" width="100%" />
+      <img :src="product.imageUrl" width="100%" />
       <v-container class="pt-2">
         <v-layout column>
             <h3 class="primary--text text-capitalize">{{product.name}}</h3>
@@ -25,7 +25,6 @@
 <script>
 import {mapState} from 'vuex'
 import ProductNameFormat from '@/helpers/product-urls.js'
-import {mixin} from '@/helpers/mixin.js'
 
 export default {
   name: 'ProductsGrid',
@@ -43,12 +42,8 @@ export default {
       'loadingErros'
     ])
   },
-  mixins: [mixin],
   methods: {
     getProductUrl: ProductNameFormat.getProductUrl
-  },
-  created() {
-    this.renderImageUrl(`${this.product.imageUrl}${this.product.imageIndex}`, 1);
   }
 }
 </script>

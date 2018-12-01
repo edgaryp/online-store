@@ -13,8 +13,11 @@
 </template>
 
 <script>
+/* eslint-disable */
 import {db} from './config/firestore'
-import {mapState} from 'vuex'
+import {mapState, mapMutations} from 'vuex'
+import * as firebase from 'firebase'
+import * as mutationTypes from '@/store/mutation-types'
 
 db.settings({ timestampsInSnapshots: true });
 
@@ -23,13 +26,39 @@ export default {
   computed: {
     ...mapState([
       'products',
-      'loadingErros'
+      'loadingErros',
+      'sessionStatus'
     ])
   },
   methods: {
+    ...mapMutations({
+      setSessionDetails: mutationTypes.SET_SESSION_DETAILS
+    }),
     uploadProducts() {
       this.$store.dispatch('UPLOAD_PRODUCT');
     }
+  },
+  created() {
+    // this.$store.dispatch('UPDATE_IMAGE_URL');
+    firebase.auth().signInAnonymously().catch(error => {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // ...
+    });
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in.
+        const {isAnonymous, uid} = user;
+        this.setSessionDetails({user, isAnonymous, uid});
+        // ...
+      } else {
+        // User is signed out.
+        console.log('User is signed out.');
+        // ...
+      }
+      // ...
+    });
   }
 }
 </script>

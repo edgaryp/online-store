@@ -62,5 +62,11 @@ export const mutations = {
   },
   [mutationTypes.SET_ACTIVATED_SLIDE](state, value) {
     state.activatedSlide = value;
+  },
+  [mutationTypes.SET_SESSION_DETAILS](state, value) {
+    const {user, isAnonymous, uid} = value;
+    state.sessionStatus.user = user;
+    state.sessionStatus.isAnonymous = isAnonymous;
+    state.sessionStatus.uid = uid;
   }
 }

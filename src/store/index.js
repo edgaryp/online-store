@@ -55,7 +55,12 @@ export default new Vuex.Store({
       }
     ],
     selectedAttribute: null,
-    activatedSlide: null
+    activatedSlide: null,
+    sessionStatus: {
+      user: null,
+      isAnonymous: null,
+      uid: null
+    }
   },
   mutations,
   actions,

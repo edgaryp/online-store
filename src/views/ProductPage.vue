@@ -35,6 +35,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import {mapState, mapMutations, mapGetters} from 'vuex'
 import * as mutationTypes from '../store/mutation-types'
 import * as getterTypes from '../store/getter-types'
@@ -46,7 +47,7 @@ export default {
     return {
       currentProduct: null,
       description: null,
-      loader: null,
+      // loader: null,
       loading: false,
       quantity: 1
     };
@@ -95,13 +96,13 @@ export default {
     },
     activatedSlide() {
       this.description = this.selectedAttribute.description;
-    },
-    loader() {
-      const l = this.loader
-      this[l] = !this[l]
-      setTimeout(() => (this[l] = false), 3000)
-      this.loader = null
     }
+    // loader() {
+    //   const l = this.loader
+    //   this[l] = !this[l]
+    //   setTimeout(() => (this[l] = false), 3000)
+    //   this.loader = null
+    // }
   },
   methods: {
     ...mapMutations({
@@ -117,12 +118,14 @@ export default {
       });
     },
     addToCart() {
-      this.loader = 'loading';
+      // this.loader = 'loading';
+      this.loading = true;
+      
     },
     updateQuantity(data) {
       const {keyCode} = data;
       if(keyCode >= 48 && keyCode <= 57) {
-        console.log(data); // eslint-disable-line
+        return
       } else {
         event.preventDefault();
         return
