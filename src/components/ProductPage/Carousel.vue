@@ -2,7 +2,7 @@
   <div v-if="imageUrl.length >= 5">
     <div class="carousel">
       <vueper-slides ref="carousel" fade :slide-ratio="0.9" :breakpoints="carouselBreakpoints" :bullets="false" :touchable="false" :arrows="false">
-          <template v-for="(image, index) in imageUrl">
+          <template v-for="(image, index) in imageUrlTwo">
             <vueper-slide :image="image" :key="index">
               <div slot="slideContent">
                 <div v-if="selectedAttribute">
@@ -16,7 +16,7 @@
       </vueper-slides>
     </div>
     <div class="thumbnails mt-3">
-      <div v-for="(image, index) in imageUrl" :key="image+index" @click="goSlide(index)">
+      <div v-for="(image, index) in imageUrlTwo" :key="image+index" @click="goSlide(index)">
         <v-img :src="image" />
       </div>
     </div>
@@ -45,7 +45,8 @@ export default {
         'https://picsum.photos/525/394?image=948',
         'https://picsum.photos/525/394?image=769',
         'https://picsum.photos/525/394?image=872',
-      ]
+      ],
+      imageUrlTwo: [this.currentProduct.imageUrl]
     };
   },
   props: [
@@ -83,7 +84,26 @@ export default {
       } else {
         this.$refs.carousel.goToSlide(index);
       }
+    },
+    async checkImageUrl() {
+      let randomNumber = () => {
+        return `${Math.floor(Math.random() * (1000 - 500 + 1)) + 500}`
+      };
+      let url = `https://picsum.photos/525/394?image=${randomNumber()}`;
+      while(this.imageUrlTwo.length <= 4) {
+        try {
+          const promise = await fetch(url);
+          this.imageUrlTwo.push(promise.url);
+          url = `https://picsum.photos/525/394?image=${randomNumber()}`;
+        } catch(error) {
+          url = `https://picsum.photos/525/394?image=${randomNumber()}`;
+          this.checkImageUrl();
+        }
+      }
     }
+  },
+  created() {
+    this.checkImageUrl();
   }
 }
 </script>
