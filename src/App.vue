@@ -14,7 +14,7 @@
 
 <script>
 /* eslint-disable */
-import {db} from './config/firestore'
+import {db, Firebase} from './config/firestore'
 import {mapState, mapMutations} from 'vuex'
 import * as firebase from 'firebase'
 import * as mutationTypes from '@/store/mutation-types'
@@ -35,7 +35,7 @@ export default {
       setSessionDetails: mutationTypes.SET_SESSION_DETAILS
     }),
     uploadProducts() {
-      this.$store.dispatch('UPLOAD_PRODUCT');
+
     }
   },
   created() {

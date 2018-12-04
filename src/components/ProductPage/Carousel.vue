@@ -24,6 +24,7 @@
 </template>
 
 <script>
+/* eslint-disable */
 import {mapState, mapMutations} from 'vuex'
 import * as mutationTypes from '@/store/mutation-types'
 import {VueperSlides, VueperSlide} from 'vueperslides'

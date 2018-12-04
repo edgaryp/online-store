@@ -36,9 +36,10 @@
 
 <script>
 /* eslint-disable */
-import {mapState, mapMutations, mapGetters} from 'vuex'
+import {mapState, mapMutations, mapGetters, mapActions} from 'vuex'
 import * as mutationTypes from '../store/mutation-types'
 import * as getterTypes from '../store/getter-types'
+import * as actionTypes from '../store/action-types'
 import Carousel from '@/components/ProductPage/Carousel.vue'
 
 
@@ -63,7 +64,8 @@ export default {
       'products',
       'attributes',
       'selectedAttribute',
-      'activatedSlide'
+      'activatedSlide',
+      'sessionStatus'
     ]),
     ...mapGetters({
       getCurrentProduct: getterTypes.GET_CURRENT_PRODUCT_P
@@ -109,6 +111,9 @@ export default {
       setCurrentProductName: mutationTypes.SET_CURRENT_PRODUCT_NAME,
       setSelectedAttribute: mutationTypes.SET_SELECTED_ATTRIBUTE
     }),
+    ...mapActions({
+      postProductToCart: actionTypes.POST_PRODUCT_TO_CART
+    }),
     goBasket() {
       this.$router.push({
         name: 'basketPage',
@@ -119,8 +124,17 @@ export default {
     },
     addToCart() {
       // this.loader = 'loading';
-      this.loading = true;
-      
+      // this.loading = true;
+      const data = {
+        collection: 'carts',
+        obj: {
+          ...this.currentProduct,
+          quantity: this.quantity,
+          selectedAttributes: this.selectedAttributes.title,
+          uid: this.sessionStatus.uid
+        }
+      }
+      this.postProductToCart(data);
     },
     updateQuantity(data) {
       const {keyCode} = data;
