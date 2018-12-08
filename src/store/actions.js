@@ -1,25 +1,66 @@
+// /* eslint-disable */
 import * as actionTypes from './action-types'
 import * as mutationTypes from './mutation-types'
 import {db} from '../config/firestore'
-// import {products} from '../assets/products'
+import * as firebase from 'firebase'
 
 export const actions = {
-  // data from local
-  // async [actionTypes.GET_PRODUCTS]({commit}) {
-  //   commit(mutationTypes.SET_PRODUCTS, products);
-  // },
-
-  // data from firestroe
-  async [actionTypes.GET_PRODUCTS]({commit}) {
-    try {
-      const collectionProducts = await db.collection('products').get();
-      collectionProducts.forEach(doc => {
-        commit(mutationTypes.SET_PRODUCTS, doc.data());
-      });
-    } catch(error) {
-      commit(mutationTypes.LOG_ERROR, {'actionTypes.GET_PRODUCTS': error});
-    }
+  async [actionTypes.INIT_FIREBASE_STORE]({commit}) {
+    firebase.auth().signInAnonymously().catch(error => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log({errorCode, errorMessage}); // eslint-disable-line
+    });
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in.
+        const {isAnonymous, uid} = user;
+        commit(mutationTypes.SET_SESSION_DETAILS, {user, isAnonymous, uid});
+      } else {
+        // User is signed out.
+      }
+    });
   },
+
+  async [actionTypes.GET_PRODUCTS]({commit}) {
+    const collectionProducts = await db.collection('products').get();
+    collectionProducts.forEach(doc => {
+      commit(mutationTypes.SET_PRODUCTS, doc.data());
+    });
+  },
+
+  async [actionTypes.POST_PRODUCT_TO_CART](undefined, data) {
+    /**
+    |--------------------------------------------------
+    | Data structure for carts in firestore
+    | (C): Collection, (D): Document
+    | carts(C) -> session uid(D) -> product id(C) -> product fields(D)
+    | each products have 4 varitions, it will be stored at same lavel, this will make query easier for bakset
+    |--------------------------------------------------
+    */
+    const {collection, currentProduct, uid, quantity, selectedAttributes} = data;
+    const {productId} = currentProduct;
+    const colRef = await db.collection(collection).doc(uid).collection(`${productId}_${selectedAttributes.split(' ').join('_')}`);
+    const getColRef = await colRef.get();
+    if(getColRef.empty) {
+      await colRef.add({...currentProduct, selectedAttributes, quantity});
+    } else {
+      const currentDoc = await colRef.doc(getColRef.docs[0].id);
+      const {quantity: currentQuantity} = await currentDoc.get().then(doc => doc.data());
+      await currentDoc.set({
+        ...currentProduct,
+        selectedAttributes,
+        quantity: currentQuantity + quantity
+      },  {
+        merge: true
+      });
+    }
+  }
+
+  // async [actionTypes.GET_BASKETS]({state, commit}, data) {
+  //   const {uid, } = state.sessionStatus;
+  //   const collectionRef = await db.collection('baskets').where()
+  // }
 
   // async [actionTypes.UPLOAD_PRODUCT]({}, data) {
     // const collectionProducts = await db.collection("user").get();
@@ -48,50 +89,4 @@ export const actions = {
     //   console.log(`(${index})Done: ${product.name}`); // eslint-disable-line
     // });
   // }, 
-
-  async [actionTypes.POST_PRODUCT_TO_CART](undefined, data) {
-    /**
-    |--------------------------------------------------
-    | Data structure for carts in firestore
-    | (C): Collection, (D): Document
-    | carts(C) -> session uid(D) -> product id(C) -> product fields(D)
-    | each products have 4 varitions, it will be stored at same lavel, this will make query easier for bakset
-    |--------------------------------------------------
-    */
-    const {collection, obj: currentProduct} = data;
-    const {uid, productId, quantity, selectedAttributes} = currentProduct;
-    try {
-      const collectionRef = await db.collection(collection).doc(uid).collection(`${productId}_${selectedAttributes.split(' ').join('_')}`);
-      const checkIfProductInCart = await collectionRef.get();
-      // Check if this product is already exist in carts for current session
-      if(checkIfProductInCart.empty) {
-        // Adding products to the cart
-        await collectionRef.add({collection, ...currentProduct});
-        console.log('Product added:', {...currentProduct}); // eslint-disable-line
-      } else {
-        const isSelectedAttributesExist = await collectionRef.where('selectedAttributes', '==', selectedAttributes).get();
-        if(!isSelectedAttributesExist.empty) {
-          isSelectedAttributesExist.forEach(async doc => {
-            const productInCart = doc.data();
-            try {
-              await collectionRef.doc(doc.id).set({
-                // If any products details changed, overwrites them.
-                ...currentProduct,
-                // Increase the quantity as this product+selectedAttributes is already exist.
-                quantity: productInCart.quantity + quantity
-              }, {
-                merge: true
-              });
-            } catch(error) {
-              console.error("Error adding document: ", error); // eslint-disable-line
-            }
-          });
-        } else {
-          await collectionRef.add({collection, ...currentProduct});
-        }
-      }
-    } catch(error) {
-      console.error("Error adding document: ", error); // eslint-disable-line
-    }
-  }
 }

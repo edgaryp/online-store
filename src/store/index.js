@@ -9,7 +9,6 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     products: [],
-    currentProductName: null,
     loadingErros: [],
     appliedFilters: [],
     priceFilterRange: [

@@ -1,19 +1,12 @@
+// /* eslint-disable */
 import * as mutationTypes from './mutation-types'
 
 export const mutations = {
-  // data from local
-  // [mutationTypes.SET_PRODUCTS](state, product) {
-  //   state.products = product;
-  // },
-  // data from firestroe
   [mutationTypes.SET_PRODUCTS](state, product) {
     state.products.push(product);
   },
   [mutationTypes.LOG_ERROR](state, error) {
     state.loadingErros.push(error);
-  },
-  [mutationTypes.SET_CURRENT_PRODUCT_NAME](state, currentProductName) {
-    state.currentProductName = currentProductName;
   },
   [mutationTypes.CLEAR_APPLIED_FILTER](state) {
     state.appliedFilters = [];

@@ -2,12 +2,6 @@ import * as getterTypes from './getter-types'
 import SortProducts from '@/helpers/sort.js'
 
 export const getters = {
-  async [getterTypes.GET_CURRENT_PRODUCT_P](state) {
-    const currentProduct = await state.products.find(product => {
-      return product.name === state.currentProductName;
-    });
-    return currentProduct;
-  },
   [getterTypes.GET_CATEGORY](state) {
     const categories = [];
     state.products.forEach(product => {

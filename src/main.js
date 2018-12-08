@@ -22,6 +22,7 @@ new Vue({
   router,
   created() {
     this.$store.dispatch(actionTypes.GET_PRODUCTS);
+    this.$store.dispatch(actionTypes.INIT_FIREBASE_STORE);
   },
   render: h => h(App)
 }).$mount('#app')

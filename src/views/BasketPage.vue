@@ -1,20 +1,30 @@
 <template>
-  <div class="hello">
-    <h3>This is basket page</h3>
-  </div>
+  <v-content class="basket-page">
+    <v-container>
+      <v-layout row>
+        <h1>Basket</h1>
+      </v-layout>
+      <v-layout row>
+        <BasketItem />
+      </v-layout>
+    </v-container>
+  </v-content>
 </template>
 
 <script>
-// import {mapGetters} from 'vuex'
-// import * as getterTypes from '../store/getter-types'
+import BasketItem from '@/components/BasketPage/BasketItem.vue'
 
 export default {
   name: 'Basket',
-  props: {
-
+  components: {
+    BasketItem
   },
-  methods: {
-
+  data() {
+    return {
+      cunt: 'cunt'
+    };
+  },
+  computed: {
   }
 }
 </script>

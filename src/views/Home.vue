@@ -45,9 +45,7 @@ import * as mutationTypes from '@/store/mutation-types'
 import * as getterTypes from '@/store/getter-types'
 import ProductNameFormat from '@/helpers/product-urls.js'
 import PriceFilterExpandable from '@/components/Home/PriceFilterExpandable.vue'
-// import PriceFilterChip from '@/components/Home/PriceFilterChip.vue'
 import CategoryFilterExpandable from '@/components/Home/CategoryFilterExpandable.vue'
-// import CategoryFilterChip from '@/components/Home/CategoryFilterChip.vue'
 import ProductsGrid from '@/components/Home/ProductsGrid.vue'
 import SearchFilter from '@/components/Home/SearchFilter.vue'
 import Sort from '@/components/Home/Sort.vue'
@@ -56,9 +54,7 @@ export default {
   name: 'home',
   components: {
     PriceFilterExpandable,
-    // PriceFilterChip,
     CategoryFilterExpandable,
-    // CategoryFilterChip,
     ProductsGrid,
     SearchFilter,
     Sort

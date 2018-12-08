@@ -1,5 +1,5 @@
 <template>
-  <div v-if="imageUrl.length >= 5">
+  <div v-if="imageUrlTwo.length >= 5">
     <div class="carousel">
       <vueper-slides ref="carousel" fade :slide-ratio="0.9" :breakpoints="carouselBreakpoints" :bullets="false" :touchable="false" :arrows="false">
           <template v-for="(image, index) in imageUrlTwo">
@@ -24,7 +24,6 @@
 </template>
 
 <script>
-/* eslint-disable */
 import {mapState, mapMutations} from 'vuex'
 import * as mutationTypes from '@/store/mutation-types'
 import {VueperSlides, VueperSlide} from 'vueperslides'
@@ -39,14 +38,6 @@ export default {
           slideRatio: 0.7
         }
       },
-      // static images for fast loading
-      imageUrl: [
-        'https://picsum.photos/525/394?image=730',
-        'https://picsum.photos/525/394?image=543',
-        'https://picsum.photos/525/394?image=948',
-        'https://picsum.photos/525/394?image=769',
-        'https://picsum.photos/525/394?image=872',
-      ],
       imageUrlTwo: [this.currentProduct.imageUrl]
     };
   },
@@ -87,19 +78,15 @@ export default {
       }
     },
     async checkImageUrl() {
-      let randomNumber = () => {
-        return `${Math.floor(Math.random() * (1000 - 500 + 1)) + 500}`
-      };
-      let url = `https://picsum.photos/525/394?image=${randomNumber()}`;
+      let url = `https://picsum.photos/525/394?image=${Math.floor(Math.random() * (1000 - 500 + 1)) + 500}`;
       while(this.imageUrlTwo.length <= 4) {
-        try {
-          const promise = await fetch(url);
+        const promise = await fetch(url);
+        if(promise.ok) {
           this.imageUrlTwo.push(promise.url);
-          url = `https://picsum.photos/525/394?image=${randomNumber()}`;
-        } catch(error) {
-          url = `https://picsum.photos/525/394?image=${randomNumber()}`;
+        } else {
           this.checkImageUrl();
         }
+        url = `https://picsum.photos/525/394?image=${Math.floor(Math.random() * (1000 - 500 + 1)) + 500}`;
       }
     }
   },

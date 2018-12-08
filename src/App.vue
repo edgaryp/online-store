@@ -8,15 +8,13 @@
       <v-spacer></v-spacer>
       <v-btn color="info" @click="uploadProducts" disabled>Upload products</v-btn>
     </v-toolbar>
-    <router-view/>
+    <router-view :key="$route.fullPath" />
   </v-app>
 </template>
 
 <script>
-/* eslint-disable */
-import {db, Firebase} from './config/firestore'
+import {db} from './config/firestore'
 import {mapState, mapMutations} from 'vuex'
-import * as firebase from 'firebase'
 import * as mutationTypes from '@/store/mutation-types'
 
 db.settings({ timestampsInSnapshots: true });
@@ -35,30 +33,7 @@ export default {
       setSessionDetails: mutationTypes.SET_SESSION_DETAILS
     }),
     uploadProducts() {
-
     }
-  },
-  created() {
-    // this.$store.dispatch('UPDATE_IMAGE_URL');
-    firebase.auth().signInAnonymously().catch(error => {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      // ...
-    });
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        // User is signed in.
-        const {isAnonymous, uid} = user;
-        this.setSessionDetails({user, isAnonymous, uid});
-        // ...
-      } else {
-        // User is signed out.
-        console.log('User is signed out.');
-        // ...
-      }
-      // ...
-    });
   }
 }
 </script>
