@@ -1,3 +1,4 @@
+// /* eslint-disable */
 import * as getterTypes from './getter-types'
 import SortProducts from '@/helpers/sort.js'
 
@@ -11,6 +12,7 @@ export const getters = {
     });
     return categories;
   },
+
   [getterTypes.GET_PRICE_RANGE_LIST](state) {
     const priceRangelist = [];
     state.priceFilterRange.forEach(element => {
@@ -18,6 +20,7 @@ export const getters = {
     });
     return priceRangelist;
   },
+
   [getterTypes.GET_FILTERED_PRODUCTS](state) {
     const result = [];
     state.products.forEach(product => {

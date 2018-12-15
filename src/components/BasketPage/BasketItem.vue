@@ -1,5 +1,7 @@
 <template>
-  <h1>Basket items goes here</h1>
+  <v-flex>
+    <h3></h3>
+  </v-flex>
 </template>
 
 <script>
@@ -7,7 +9,7 @@ export default {
   name: 'BasketItem',
   data() {
     return {
-
+      
     };
   }
 }

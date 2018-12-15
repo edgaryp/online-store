@@ -5,6 +5,10 @@ export const mutations = {
   [mutationTypes.SET_PRODUCTS](state, product) {
     state.products.push(product);
   },
+  [mutationTypes.SET_BASKET](state, {basketItems, totalPrice}) {
+    state.basket.items = [...basketItems];
+    state.basket.totoalPrice = totalPrice;
+  },
   [mutationTypes.LOG_ERROR](state, error) {
     state.loadingErros.push(error);
   },

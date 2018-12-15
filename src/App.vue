@@ -25,7 +25,8 @@ export default {
     ...mapState([
       'products',
       'loadingErros',
-      'sessionStatus'
+      'sessionStatus',
+      'basket'
     ])
   },
   methods: {

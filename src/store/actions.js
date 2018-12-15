@@ -5,7 +5,7 @@ import {db} from '../config/firestore'
 import * as firebase from 'firebase'
 
 export const actions = {
-  async [actionTypes.INIT_FIREBASE_STORE]({commit}) {
+  async [actionTypes.INIT_FIREBASE_STORE]({commit, dispatch}) {
     firebase.auth().signInAnonymously().catch(error => {
       const errorCode = error.code;
       const errorMessage = error.message;
@@ -16,6 +16,7 @@ export const actions = {
         // User is signed in.
         const {isAnonymous, uid} = user;
         commit(mutationTypes.SET_SESSION_DETAILS, {user, isAnonymous, uid});
+        dispatch(actionTypes.GET_BAKSET);
       } else {
         // User is signed out.
       }
@@ -23,70 +24,93 @@ export const actions = {
   },
 
   async [actionTypes.GET_PRODUCTS]({commit}) {
-    const collectionProducts = await db.collection('products').get();
-    collectionProducts.forEach(doc => {
-      commit(mutationTypes.SET_PRODUCTS, doc.data());
-    });
+    try {
+      const collectionProducts = await db.collection('products').get();
+      if(collectionProducts.empty) {
+        throw new Error('No products found');
+      } else {
+        collectionProducts.forEach(doc => {
+          commit(mutationTypes.SET_PRODUCTS, doc.data());
+        });
+      }
+    } catch(error) {
+      throw error;
+    }
   },
 
-  async [actionTypes.POST_PRODUCT_TO_CART](undefined, data) {
+  async [actionTypes.POST_PRODUCT_TO_CART]({dispatch}, data) {
     /**
     |--------------------------------------------------
     | Data structure for carts in firestore
     | (C): Collection, (D): Document
-    | carts(C) -> session uid(D) -> product id(C) -> product fields(D)
+    | basket(C) -> session uid(D) -> -> items(c) -> product id(C) -> product fields(D)
     | each products have 4 varitions, it will be stored at same lavel, this will make query easier for bakset
     |--------------------------------------------------
     */
-    const {collection, currentProduct, uid, quantity, selectedAttributes} = data;
+    const {currentProduct, uid, quantity, selectedAttributes} = data;
     const {productId} = currentProduct;
-    const colRef = await db.collection(collection).doc(uid).collection(`${productId}_${selectedAttributes.split(' ').join('_')}`);
-    const getColRef = await colRef.get();
-    if(getColRef.empty) {
-      await colRef.add({...currentProduct, selectedAttributes, quantity});
-    } else {
-      const currentDoc = await colRef.doc(getColRef.docs[0].id);
-      const {quantity: currentQuantity} = await currentDoc.get().then(doc => doc.data());
-      await currentDoc.set({
+    const itemRef = await db.collection('basket').doc(uid).collection('items').doc(`${productId}_${selectedAttributes.split(' ').join('_')}`);
+    const getDocRef = await itemRef.get();
+    if(!getDocRef.exists) {
+      await itemRef.set({
         ...currentProduct,
         selectedAttributes,
-        quantity: currentQuantity + quantity
-      },  {
+        quantity,
+        subTotalPrice: quantity * currentProduct.price,
+      });
+    } else {
+      const {quantity: currentQuantity} = getDocRef.data();
+      const newQuantity = currentQuantity + quantity;
+      const newSubTotalPrice = newQuantity * currentProduct.price;
+      await itemRef.set({
+        ...currentProduct,
+        selectedAttributes,
+        quantity: newQuantity,
+        subTotalPrice: newSubTotalPrice,
+      }, {
         merge: true
       });
     }
+    await dispatch(actionTypes.UPDATE_TOTAL_PRICE, quantity * currentProduct.price);
+    dispatch(actionTypes.GET_BAKSET);
+  },
+
+  async [actionTypes.GET_BAKSET]({state, commit}) {
+    const docRef = await db.collection('basket').doc(state.sessionStatus.uid);
+    const [uidDoc, itemsCol] = await Promise.all([
+      docRef.get().then(doc => doc.data()),
+      docRef.collection('items').get()
+    ]);
+    let basketItems = [];
+    if (!itemsCol.empty) {
+      await itemsCol.forEach(doc => {
+        basketItems.push(doc.data());
+      });
+      commit(mutationTypes.SET_BASKET, {basketItems, totalPrice: uidDoc.totalPrice});
+    }
+  },
+
+  async [actionTypes.UPDATE_TOTAL_PRICE]({state}, newAmount) {
+    const docRef = await db.collection('basket').doc(state.sessionStatus.uid);
+    const uidDoc = await docRef.get().then(doc => doc.data());
+    const currentTotalPrice = uidDoc ? uidDoc.totalPrice : 0;
+    docRef.set({
+      totalPrice: currentTotalPrice + newAmount
+    }, {
+      merge: true
+    });
+  },
+
+  async [actionTypes.UPDATE_PRODUCT](undefined, data) {
+    /**
+    |--------------------------------------------------
+    | Update products. Data argument should be an object.
+    |--------------------------------------------------
+    */
+    db.collection('products').get().then(snhapshots => {
+      snhapshots.forEach(doc => {
+        db.collection('products').doc(doc.id).set(data, { merge: true })
+      })
+    })
   }
-
-  // async [actionTypes.GET_BASKETS]({state, commit}, data) {
-  //   const {uid, } = state.sessionStatus;
-  //   const collectionRef = await db.collection('baskets').where()
-  // }
-
-  // async [actionTypes.UPLOAD_PRODUCT]({}, data) {
-    // const collectionProducts = await db.collection("user").get();
-    // collectionProducts.forEach(async doc => {
-      // db.collection("user").doc(doc.id).update({
-      //   productId: firebase.firestore.FieldValue.delete()
-      // }).then(() => {
-      //   console.log(doc.data());
-      // });
-      // promise.set({
-      //   productId: doc.id
-      // }, { merge: true })
-      // console.log(doc.data());
-    // });
-
-    // // Delete
-    // const collectionSnap = await collectionProducts.get();
-    // collectionSnap.forEach(async (product, index) => {
-    //   await collectionProducts.doc(product.id).delete();
-    //   console.log(`(${index})Deleted: ${product.id} => ${product.data()}`); // eslint-disable-line
-    // });
-
-    // // Add
-    // products.forEach(async (product, index) => {
-    //   await collectionProducts.add(product);
-    //   console.log(`(${index})Done: ${product.name}`); // eslint-disable-line
-    // });
-  // }, 
 }

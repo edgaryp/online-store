@@ -115,7 +115,6 @@ export default {
     },
     async addToCart() {
       const data = {
-        collection: 'baskets',
         currentProduct: this.currentProduct,
         quantity: this.quantity,
         selectedAttributes: this.selectedAttributes.title,
@@ -126,7 +125,7 @@ export default {
         this.$router.push('/basket');
       } catch(error) {
         this.showAlert = true;
-        throw new Error('Something went wrong!!');
+        throw error;
       }
     },
     updateQuantity(data) {

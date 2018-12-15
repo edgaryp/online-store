@@ -13,6 +13,7 @@
 
 <script>
 import BasketItem from '@/components/BasketPage/BasketItem.vue'
+import {mapState} from 'vuex'
 
 export default {
   name: 'Basket',
@@ -25,6 +26,9 @@ export default {
     };
   },
   computed: {
+    ...mapState([
+      // ''
+    ])
   }
 }
 </script>

@@ -9,6 +9,10 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     products: [],
+    basket: {
+      items: null,
+      totoalPrice: null
+    },
     loadingErros: [],
     appliedFilters: [],
     priceFilterRange: [
